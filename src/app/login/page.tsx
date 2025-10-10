@@ -5,24 +5,26 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/schemas/authSchema";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import { signIn } from "next-auth/react";
 import Image from "next/image";
 
-// Componentes UI
+import { signIn } from "next-auth/react";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-// Ícones
 import { UserPlus, DoorOpen, LoaderCircle } from "lucide-react";
 import ParticulasDotsBackground from "@/components/TSparticulasBackground";
+import Link from "next/link";
 
 type FormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -31,35 +33,31 @@ export default function LoginPage() {
   } = useForm<FormData>({ resolver: zodResolver(loginSchema) });
 
   const onSubmit = async (data: FormData) => {
-
+    setError(null);
     const res = await signIn("credentials", {
       email: data.email,
       password: data.password,
-      redirect: true,
+      redirect: false,
     });
 
     if (res?.ok) {
       router.push("/inicio");
     } else {
-      setError("Credenciais inválidas");
+      setError("Credenciais inválidas. Tente novamente.");
     }
   };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center">
       <ParticulasDotsBackground />
-      <section className="bg-white/10 backdrop-blur rounded-lg shadow-lg p-6 border border-blue-300 text-white w-full max-w-md">
-        <header className="flex justify-between mb-4">
-          <h1 className="text-3xl font-semibold">Login</h1>
-          <a
-            href="/registrar"
-            className="text-sm flex gap-2 items-center hover:underline text-blue-300"
-            aria-label="Cadastrar-se"
-          >
-            <UserPlus size={15} /> Cadastrar-se
-          </a>
+      <section className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-white/20 text-white w-full max-w-md">
+        {/* Branding */}
+        <header className="text-center mb-8">
+          <h1 className="text-3xl font-bold tracking-tight">Request Center</h1>
+          <p className="text-sm text-white/70">Sua central de solicitações</p>
         </header>
 
+        {/* Formulário */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
           <fieldset className="flex flex-col gap-2">
             <Label htmlFor="email">Email</Label>
@@ -67,9 +65,8 @@ export default function LoginPage() {
               id="email"
               type="email"
               {...register("email")}
-              placeholder="exemplo@exemplo.com"
+              placeholder="exemplo@empresa.com"
               required
-              aria-describedby="email-error"
             />
           </fieldset>
 
@@ -79,67 +76,88 @@ export default function LoginPage() {
               id="password"
               type="password"
               {...register("password")}
-              placeholder="Senha"
+              placeholder="••••••••"
               required
-              aria-describedby="password-error"
             />
           </fieldset>
 
-          <fieldset className="flex items-center gap-2">
-            <Checkbox id="remember" />
-            <Label htmlFor="remember">Lembre-se de mim</Label>
-          </fieldset>
+          <div className="flex items-center justify-between text-sm">
+            <label className="flex items-center gap-2">
+              <Checkbox id="remember" />
+              <span>Lembre-se de mim</span>
+            </label>
+            <a
+              href="/esqueci-senha"
+              className="text-blue-300 hover:underline"
+            >
+              Esqueceu a senha?
+            </a>
+          </div>
+
+          {error && (
+            <p className="text-red-400 text-sm font-medium">{error}</p>
+          )}
 
           <Button
             type="submit"
             variant="secondary"
             disabled={isSubmitting}
-            className="w-full btn btn-primary flex justify-center items-center gap-2"
-            aria-busy={isSubmitting}
+            className="w-full flex justify-center items-center gap-2 mt-4"
           >
             {isSubmitting ? (
               <>
-                <LoaderCircle className="animate-spin" /> Logando...
+                <LoaderCircle className="animate-spin" /> Entrando...
               </>
             ) : (
               <>
-                <DoorOpen /> Logar
+                <DoorOpen /> Entrar
               </>
             )}
           </Button>
         </form>
 
-        <div className="mt-6 flex items-center gap-2">
-          <hr className="flex-grow border-t border-white/30" />
-          <span className="text-xs uppercase text-white/70">Ou continue com</span>
-          <hr className="flex-grow border-t border-white/30" />
+        {/* Divider */}
+        <div className="mt-8 flex items-center gap-2">
+          <hr className="flex-grow border-t border-white/20" />
+          <span className="text-xs uppercase text-white/50">
+            ou continue com
+          </span>
+          <hr className="flex-grow border-t border-white/20" />
         </div>
 
-        <div className="mt-5 flex justify-between gap-4">
+        {/* Login social */}
+        <div className="mt-6 grid grid-cols-2 gap-4">
           <Button
             type="button"
-            variant="secondary"
+            variant="outline"
             disabled={isSubmitting}
-            className="btn btn-primary flex-1 flex items-center justify-center gap-2"
             onClick={() => signIn("google")}
-            aria-label="Continuar com Google"
+            className="flex items-center justify-center text-black"
           >
-            <Image alt="Google" src="/google.png" width={20} height={20} />
             Google
           </Button>
-
           <Button
             type="button"
-            variant="secondary"
+            variant="outline"
             disabled={isSubmitting}
-            className="btn btn-primary flex-1 flex items-center justify-center gap-2"
             onClick={() => signIn("github")}
-            aria-label="Continuar com Github"
+            className="flex items-center justify-center text-black"
           >
-            <Image alt="Github" src="/github.png" width={20} height={20} />
             Github
           </Button>
         </div>
+
+        {/* Footer */}
+        <footer className="mt-8 text-center text-sm text-white/70">
+          Não possui conta?{" "}
+          <Link
+            href="/registrar"
+            className="text-blue-300 hover:underline inline-flex items-center gap-1"
+          >
+            <UserPlus size={14} /> Cadastre-se
+          </Link>
+        </footer>
+        <Image src="/logo/teste.png" alt="Request Center" width={80} height={80} className="mb-6 animate-pulse" />
       </section>
     </div>
   );

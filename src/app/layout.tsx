@@ -16,9 +16,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Request Center",
   description: "Request Center",
-  icons: {
-
-  }
 };
 
 export default function RootLayout({

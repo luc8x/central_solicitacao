@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tooltip,
   TooltipContent,
@@ -46,7 +45,6 @@ import {
   AlertCircle,
   CheckCircle2,
   Search,
-  RefreshCw,
 } from "lucide-react";
 import ChatRecentes from "@/components/chat/chatRecentes";
 import { CompartilharPopover } from "@/components/shareSolicitacao/popover";
@@ -187,7 +185,7 @@ export default function SolicitacaoPage() {
     <div className="grid gap-6 grid-cols-1 md:grid-cols-[2fr_1fr]">
       {/* Solicitações e Formulário */}
       <section className="flex flex-col gap-4 col-span-1">
-        <Card variant="lifted" className="bg-background border-border shadow-lg">
+        <Card className="bg-background border-border shadow-lg">
           <CardContent className="p-5">
             <header className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
               <div>
@@ -399,7 +397,7 @@ export default function SolicitacaoPage() {
                     </p>
                     {!searchTerm && (
                       <p className="text-sm text-muted-foreground mt-2">
-                        Clique em "Nova Solicitação" para começar.
+                        Clique em &quot;Nova Solicitação&quot; para começar.
                       </p>
                     )}
                   </motion.div>

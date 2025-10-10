@@ -1,18 +1,18 @@
 "use client"
 
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";;
-import { registerSchema } from "@/schemas/authSchema";
-import { z } from "zod";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import Image from 'next/image'
+import { useForm, Controller } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { registerSchema } from "@/schemas/authSchema"
+import { z } from "zod"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import Link from "next/link"
 
 // Componentes
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import ParticulasDotsBackground from "@/components/TSparticulasBackground";
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import ParticulasDotsBackground from "@/components/TSparticulasBackground"
 import {
     Select,
     SelectContent,
@@ -22,9 +22,7 @@ import {
 } from "@/components/ui/select"
 
 // Icons
-import { LoaderCircle } from 'lucide-react';
-import { UserPlus } from 'lucide-react';
-import { DoorOpen } from 'lucide-react';
+import { LoaderCircle, UserPlus, DoorOpen } from "lucide-react"
 
 type FormData = z.infer<typeof registerSchema>
 
@@ -32,7 +30,12 @@ export default function RegisterPage() {
     const router = useRouter()
     const [error, setError] = useState("")
 
-    const { register, handleSubmit, control, formState: { errors, isSubmitting } } = useForm<FormData>({ resolver: zodResolver(registerSchema) })
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: { errors, isSubmitting },
+    } = useForm<FormData>({ resolver: zodResolver(registerSchema) })
 
     const onSubmit = async (data: FormData) => {
         setError("")
@@ -52,80 +55,131 @@ export default function RegisterPage() {
     }
 
     return (
-        <div className="relative min-h-screen flex items-center justify-center">
+        <div className="relative min-h-screen flex items-center justify-center p-4">
             <ParticulasDotsBackground />
-            <section className="bg-white/10 backdrop-blur rounded-lg shadow-lg p-6 border border-blue-300 text-white w-full max-w-md">
-                <div className="flex justify-between mb-2">
-                    <h1 className="text-3xl font-semibold">Cadastrar-se</h1>
-                    <a href="/login" className="text-sm flex gap-2 items-center text-blue-300"><DoorOpen size={15} />Login</a>
+            <section className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-white/20 text-white w-full max-w-md">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-3xl font-bold tracking-tight">Criar Conta</h1>
+                    <Link
+                        href="/login"
+                        className="text-sm flex gap-1 items-center text-blue-300 hover:underline"
+                    >
+                        <DoorOpen size={16} /> Login
+                    </Link>
                 </div>
-                <p className="mb-4 text-sm text-white">Insira as informações abaixo para criar sua conta.</p>
-                <div className="mb-5 flex justify-between gap-2">
-                    <Button type="submit" variant={"secondary"} disabled={isSubmitting} className="btn btn-primary w-45">
-                        <Image alt="Google" src={'/google.png'} width={20} height={20} />Google
+
+                <p className="mb-6 text-sm text-white/80">
+                    Preencha os campos abaixo para se registrar na plataforma.
+                </p>
+
+                {/* Social login */}
+                <div className="flex gap-3 mb-6">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        disabled={isSubmitting}
+                        className="flex-1 flex items-center text-black"
+                    >
+                        Google
                     </Button>
-                    <Button type="submit" variant={"secondary"} disabled={isSubmitting} className="btn btn-primary w-45">
-                        <Image alt="Github" src={'/github.png'} width={20} height={20} />Github
+                    <Button
+                        type="button"
+                        variant="outline"
+                        disabled={isSubmitting}
+                        className="flex-1 flex items-center text-black"
+                    >
+                        Github
                     </Button>
                 </div>
-                <div className="flex">
-                    <div className="inset-0 flex items-center">
-                        <span className="w-30 border-t"></span>
-                    </div>
-                    <div className="relative flex justify-center text-xs uppercase">
-                        <span className="btext-white px-2">Ou continue com</span>
-                    </div>
-                    <div className="inset-0 flex items-center">
-                        <span className="w-30 border-t"></span>
-                    </div>
+
+                {/* Divider */}
+                <div className="relative flex items-center justify-center mb-6">
+                    <span className="w-full border-t border-white/20"></span>
+                    <span className="absolute bg-white px-4 text-xs uppercase rounded-2xl text-black">
+                        ou
+                    </span>
                 </div>
-                <div className="mt-5">
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                        <fieldset className="flex flex-col gap-2">
-                            <Label>Nome Completo</Label>
-                            <Input type="text" {...register("name")} className="input" required placeholder="Nome completo" />
-                            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
-                        </fieldset>
 
-                        <fieldset className="flex flex-col gap-2">
-                            <Label>Email</Label>
-                            <Input type="email" {...register("email")} className="input" required placeholder="exemplo@exemplo.com" />
-                            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-                        </fieldset>
+                {/* Form */}
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 flex flex-col gap-3">
+                    <fieldset className="flex flex-col gap-2">
+                        <Label>Nome Completo</Label>
+                        <Input
+                            type="text"
+                            {...register("name")}
+                            placeholder="Nome completo"
+                        />
+                        {errors.name && (
+                            <p className="text-red-400 text-xs">{errors.name.message}</p>
+                        )}
+                    </fieldset>
 
-                        <fieldset className="flex flex-col gap-2">
-                            <Label>Permissões</Label>
-                            <Controller
-                                name="permissao"
-                                control={control}
-                                render={({ field }) => (
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Selecione sua permissão" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="SOLICITANTE">Solicitante</SelectItem>
-                                            <SelectItem value="ATENDENTE">Atendente</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                )}
-                            />
-                            {errors.permissao && <p className="text-red-500 text-sm">{errors.permissao.message}</p>}
-                        </fieldset>
+                    <fieldset className="flex flex-col gap-2">
+                        <Label>Email</Label>
+                        <Input
+                            type="email"
+                            {...register("email")}
+                            placeholder="exemplo@empresa.com"
+                        />
+                        {errors.email && (
+                            <p className="text-red-400 text-xs">{errors.email.message}</p>
+                        )}
+                    </fieldset>
 
-                        <fieldset className="flex flex-col gap-2">
-                            <Label>Senha</Label>
-                            <Input type="password" {...register("password")} className="input" required placeholder="Senha" />
-                            {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-                        </fieldset>
+                    <fieldset className="flex flex-col gap-2">
+                        <Label>Permissões</Label>
+                        <Controller
+                            name="permissao"
+                            control={control}
+                            render={({ field }) => (
+                                <Select onValueChange={field.onChange} value={field.value} >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Selecione uma permissão" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="SOLICITANTE">Solicitante</SelectItem>
+                                        <SelectItem value="ATENDENTE">Atendente</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                        {errors.permissao && (
+                            <p className="text-red-400 text-xs">{errors.permissao.message}</p>
+                        )}
+                    </fieldset>
 
-                        <p className="text-red-500 text-sm">{error}</p>
+                    <fieldset className="flex flex-col gap-2">
+                        <Label>Senha</Label>
+                        <Input
+                            type="password"
+                            {...register("password")}
+                            placeholder="Digite sua senha"
+                        />
+                        {errors.password && (
+                            <p className="text-red-400 text-xs">{errors.password.message}</p>
+                        )}
+                    </fieldset>
 
-                        <Button type="submit" variant={"secondary"} disabled={isSubmitting} className="btn btn-primary w-full">
-                            {isSubmitting ? (<> <LoaderCircle className="animate-spin" /> Registrando... </>) : (<> <UserPlus /> Criar Conta</>)}
-                        </Button>
-                    </form>
-                </div>
+                    {error && <p className="text-red-400 text-sm">{error}</p>}
+
+                    <Button
+                        type="submit"
+                        variant="outline"
+                        disabled={isSubmitting}
+                        className="w-full flex justify-center items-center gap-2 text-black font-medium rounded-lg"
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <LoaderCircle className="animate-spin" /> Registrando...
+                            </>
+                        ) : (
+                            <>
+                                <UserPlus /> Criar Conta
+                            </>
+                        )}
+                    </Button>
+                </form>
             </section>
         </div>
     )

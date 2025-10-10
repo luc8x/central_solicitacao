@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { prisma } from "@/lib/prisma/prisma";
 import { authOptions } from "@/lib/auth";
+import type { Session } from "next-auth";
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
@@ -34,7 +35,7 @@ export async function DELETE(_req: Request, { params }: { params: { id: string }
   }
 }
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
@@ -70,15 +71,14 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   return NextResponse.json(solicitacao);
 }
 
-export async function PATCH(req: Request) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
   }
 
-  const { pathname } = req.nextUrl;
-  const idString = pathname.split("/").pop();
-  const id = Number(idString);
+  const { id: paramId } = await params;
+  const id = Number(paramId);
 
   if (isNaN(id)) {
     return NextResponse.json({ error: "ID inválido" }, { status: 400 });
@@ -137,7 +137,7 @@ export async function PATCH(req: Request) {
 
   try {
     // Processar arquivos se existirem
-    let arquivosProcessados = [];
+    let arquivosProcessados: any[] = [];
     if (arquivos && Array.isArray(arquivos) && arquivos.length > 0) {
       // Verificar limite de 5 arquivos
       if (arquivos.length > 5) {

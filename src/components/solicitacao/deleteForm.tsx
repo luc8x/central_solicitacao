@@ -20,13 +20,13 @@ import { Trash2, X } from "lucide-react";
 
 interface DeletarDialogProps {
     solicitacao: Solicitacao;
-    onDelete: (id: string) => void;
+    onDelete: (id: number) => void;
 }
 
 export function DeletarDialog({ solicitacao, onDelete }: DeletarDialogProps) {
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (id: number) => {
         try {
-            const res = await fetch(`/api/solicitacao/${id}`, { method: "DELETE" });
+            const res = await fetch(`/api/solicitacao/${id.toString()}`, { method: "DELETE" });
             if (!res.ok) throw new Error();
             onDelete(id);
             toast.success("Solicitação deletada.");

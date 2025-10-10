@@ -128,7 +128,7 @@ export default function SolicitacaoPage() {
 
   const router = useRouter();
 
-  const atenderSolicitacao = async (solicitacaoId) => {
+  const atenderSolicitacao = async (solicitacaoId: number) => {
     setLoading(true);
     try {
       const res = await fetch(`/api/solicitacao/${solicitacaoId}/atender`, {

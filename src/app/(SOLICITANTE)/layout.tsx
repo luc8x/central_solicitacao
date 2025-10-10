@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
+import type { Session } from "next-auth";
+
 import { Providers } from "@/lib/providers";
 import "../globals.css";
 
@@ -21,6 +23,10 @@ export const metadata: Metadata = {
 
 export default async function RootDashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
+
+  if (!session || !session.user) {
+    return redirect("/login");
+  }
 
   if (session.user.permissao !== "SOLICITANTE") {
     return redirect("/403");

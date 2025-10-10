@@ -1,7 +1,18 @@
 import type { Metadata } from "next";
 import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
+import type { Session } from "next-auth";
+
+interface CustomSession extends Session {
+  user: {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    permissao: string;
+  };
+}
 import { Providers } from "@/lib/providers";
 import "../globals.css";
 
@@ -20,10 +31,9 @@ export const metadata: Metadata = {
 };
 
 export default async function RootDashboardLayout({ children }: { children: React.ReactNode }) {
-
   const session = await getServerSession(authOptions);
 
-  if (!session) {
+  if (!session || !session.user) {
     return redirect("/login");
   }
 

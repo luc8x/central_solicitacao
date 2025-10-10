@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma/prisma";
 
 export async function GET(
   req: Request,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
   console.log('token: ', token);
